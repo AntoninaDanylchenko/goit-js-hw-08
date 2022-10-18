@@ -6,7 +6,7 @@ const player = new Vimeo(iframe);
 
 startVideo();
 
-player.on('timeupdate', throttle(saveCurrentTime, 500));
+player.on('timeupdate', throttle(saveCurrentTime, 1000));
 
 function saveCurrentTime(data) {
   const statusData = data.seconds;

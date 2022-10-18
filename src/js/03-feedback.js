@@ -4,10 +4,11 @@ const formEl = document.querySelector('.feedback-form');
 const inputEl = document.querySelector('input');
 const textAreaEl = document.querySelector('textarea');
 
-const formData = {};
+const formValueToLocal = {};
 messageFromLocal();
-formEl.addEventListener('input', onInputElements);
-formEl.addEventListener('submit', throttle(onFormSubmit, 500));
+
+formEl.addEventListener('input', throttle(onInputElements, 1000));
+formEl.addEventListener('submit', onFormSubmit);
 
 function onFormSubmit(event) {
   event.preventDefault();
@@ -20,22 +21,23 @@ function onFormSubmit(event) {
 }
 
 function onInputElements(e) {
-  formData[e.target.name] = e.target.value;
+  formValueToLocal[e.target.name] = e.target.value;
 
-  localStorage.setItem('feedback-form-state', JSON.stringify(formData));
+  localStorage.setItem('feedback-form-state', JSON.stringify(formValueToLocal));
+  console.log(JSON.parse(localStorage.getItem('feedback-form-state')));
 }
 
 function messageFromLocal() {
+  console.log(JSON.parse(localStorage.getItem('feedback-form-state')));
   let savedMessage = localStorage.getItem('feedback-form-state');
 
   if (savedMessage) {
-    savedMessage = JSON.parse(savedMessage);
-    console.log(savedMessage);
-    if (savedMessage.email) {
-      inputEl.value = savedMessage.email;
-    }
-    if (savedMessage.message) {
-      textAreaEl.value = savedMessage.message;
-    }
+    const parsedMessage = JSON.parse(savedMessage);
+
+    console.log(parsedMessage);
+    Object.entries(parsedMessage).forEach(([name, value]) => {
+      formValueToLocal[name] = value;
+      formEl.elements[name].value = value;
+    });
   }
 }
