@@ -27,5 +27,3 @@ function startVideo() {
     player.setCurrentTime(localTimeData);
   }
 }
-
-localStorage.removeItem('videoplayer-current-time');
